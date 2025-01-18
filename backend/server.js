@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.route.js";
 import { v2 } from "cloudinary";
 import postRouter from "./routes/post.route.js";
+import notificationRouter from "./routes/notification.route.js";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/post", postRouter);
+app.use("/api/notification", notificationRouter)
 
 app.listen(port, () => {
   connectDB();
