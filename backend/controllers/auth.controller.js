@@ -9,11 +9,11 @@ export const signup = async (req, res) => {
     if (!emialRegEx.test(email)) {
       return res
         .status(400)
-        .json({ success: false, error: "Please enter a valid email" });
+        .json({ error: "Please enter a valid email" });
     }
     const existingUserName = await User.findOne({ username });
     if (existingUserName) {
-      return res.status(400).json({ message: "Username is already taken." });
+      return res.status(400).json({ error: "Username is already taken." });
     }
 
     const existingEmail = await User.findOne({ email });
