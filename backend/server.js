@@ -20,6 +20,9 @@ const app = express();
 
 const port = process.env.PORT || 8000;
 
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb" }));
+
 app.use(express.json());
 
 app.use(cookieParser());
@@ -33,7 +36,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/post", postRouter);
-app.use("/api/notification", notificationRouter)
+app.use("/api/notification", notificationRouter);
 
 app.listen(port, () => {
   connectDB();

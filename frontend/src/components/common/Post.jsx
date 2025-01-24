@@ -60,7 +60,7 @@ const Post = ({ post }) => {
             to={`/profile/${postOwner.username}`}
             className="w-8 rounded-full overflow-hidden"
           >
-            <img src={postOwner.profileImg || "/avatar-placeholder.png"} />
+            <img src={postOwner.profileImage || "/avatar-placeholder.png"} />
           </Link>
         </div>
         <div className="flex flex-col flex-1">
@@ -89,9 +89,9 @@ const Post = ({ post }) => {
           </div>
           <div className="flex flex-col gap-3 overflow-hidden">
             <span>{post.text}</span>
-            {post.img && (
+            {post.image && (
               <img
-                src={post.img}
+                src={post.image}
                 className="h-80 object-contain rounded-lg border border-gray-700"
                 alt=""
               />
@@ -131,7 +131,7 @@ const Post = ({ post }) => {
                           <div className="w-8 rounded-full">
                             <img
                               src={
-                                comment.user.profileImg ||
+                                comment.user.profileImage ||
                                 "/avatar-placeholder.png"
                               }
                             />
