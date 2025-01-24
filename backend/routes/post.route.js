@@ -18,7 +18,7 @@ postRouter.post("/create", protectedRoute, createPost);
 postRouter.post("/like/:id", protectedRoute, likeUnlikePost);
 postRouter.post("/comment/:id", protectedRoute, commentOnPost);
 postRouter.delete("/delete/:id", protectedRoute, deletePost);
-postRouter.get("/posts", protectedRoute, getAllPost);
+postRouter.get("/all", protectedRoute, getAllPost);
 postRouter.get("/myposts", protectedRoute, myPost);
 postRouter.get("/likedposts/:id", protectedRoute, getLikedPosts);
 postRouter.get("/getfollowingposts", protectedRoute, getFollowingPost);
