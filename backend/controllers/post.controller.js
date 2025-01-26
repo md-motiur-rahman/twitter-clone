@@ -42,6 +42,8 @@ export const likeUnlikePost = async (req, res) => {
     const userId = req.user._id;
     const { id: postId } = req.params;
 
+    const user = await User.findById(userId);
+
     const post = await Post.findById(postId);
 
     if (!post) {
@@ -52,8 +54,11 @@ export const likeUnlikePost = async (req, res) => {
 
     if (userLikedPost) {
       // Unlike post
-      await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
-      await User.updateOne({ _id: userId }, { $pull: { likedPosts: postId } });
+      post.likes.pop(userId);
+      await post.save();
+
+      user.likedpost.pop(postId);
+      await user.save();
 
       const updatedLikes = post.likes.filter(
         (id) => id.toString() !== userId.toString()
@@ -62,8 +67,9 @@ export const likeUnlikePost = async (req, res) => {
     } else {
       // Like post
       post.likes.push(userId);
-      await User.updateOne({ _id: userId }, { $push: { likedPosts: postId } });
+      user.likedpost.push(postId);
       await post.save();
+      await user.save();
 
       const notification = new Notification({
         from: userId,
@@ -159,18 +165,13 @@ export const myPost = async (req, res) => {
 };
 
 export const getLikedPosts = async (req, res) => {
+  const userId = req.params.id;
+
   try {
-    const userId = req.params.id;
-
     const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
 
-    if (!user) {
-      return res.status(404).json({ eror: "No user found" });
-    }
-
-    const likedPosts = await Post.find({
-      _id: { $in: user.likedpost },
-    })
+    const likedPosts = await Post.find({ _id: { $in: user.likedpost } })
       .populate({
         path: "user",
         select: "-password",
@@ -180,9 +181,10 @@ export const getLikedPosts = async (req, res) => {
         select: "-password",
       });
 
-    return res.status(200).json(likedPosts);
+    res.status(200).json(likedPosts);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.log("Error in getLikedPosts controller: ", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

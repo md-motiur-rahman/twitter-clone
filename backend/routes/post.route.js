@@ -20,7 +20,7 @@ postRouter.post("/comment/:id", protectedRoute, commentOnPost);
 postRouter.delete("/delete/:id", protectedRoute, deletePost);
 postRouter.get("/all", protectedRoute, getAllPost);
 postRouter.get("/myposts", protectedRoute, myPost);
-postRouter.get("/likedposts/:id", protectedRoute, getLikedPosts);
+postRouter.get("/likes/:id", protectedRoute, getLikedPosts);
 postRouter.get("/getfollowingposts", protectedRoute, getFollowingPost);
 postRouter.get("/getuserpost/:username", protectedRoute, getUserposts)
 
