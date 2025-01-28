@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import useUpdateUserProfile from "../../hooks/useUpdateUserProfile";
 
 const EditProfileModal = ({ user }) => {
   const [formData, setFormData] = useState({
@@ -19,37 +20,7 @@ const EditProfileModal = ({ user }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const { mutate: updateProfile, isPending: isProfileUpdating } = useMutation({
-    mutationFn: async () => {
-      try {
-        const res = await fetch("/api/user/update", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.message || "Something went wrong!");
-        }
-        return data;
-      } catch (error) {
-        throw new Error(error.message || "Something went wrong!");
-      }
-    },
-    onSuccess: () => {
-      toast.success("Profile updated successfully");
-      Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["userProfile"] }),
-        queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-      ]);
-    },
-	onError: (error) => {
-	  toast.error(error.message);
-	},
-  });
-
+  const {updateProfile, isUpdatingProfile} = useUpdateUserProfile()
   return (
     <>
       <button
@@ -65,9 +36,9 @@ const EditProfileModal = ({ user }) => {
           <h3 className="font-bold text-lg my-3">Update Profile</h3>
           <form
             className="flex flex-col gap-4"
-            onSubmit={(e) => {
+            onSubmit={async(e) => {
               e.preventDefault();
-              updateProfile();
+              await updateProfile(formData);
             }}
           >
             <div className="flex flex-wrap gap-2">
@@ -132,7 +103,7 @@ const EditProfileModal = ({ user }) => {
               onChange={handleInputChange}
             />
             <button className="btn btn-primary rounded-full btn-sm text-white">
-              {isProfileUpdating ? "Updating..." : "Update"}
+              {isUpdatingProfile ? "Updating..." : "Update"}
             </button>
           </form>
         </div>
